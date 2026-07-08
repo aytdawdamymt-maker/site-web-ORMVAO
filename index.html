@@ -210,5 +210,369 @@
     </footer>
 
     <script src="script.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORMVAO — Office Régional de Mise en Valeur Agricole de Ouarzazate</title>
+  <meta name="description" content="ORMVAO valorise les terres agricoles et les ressources en eau de la région de Ouarzazate à travers l'irrigation, l'accompagnement des agriculteurs et des projets de développement durable.">
+
+  <!-- Google Fonts: Fraunces for character-rich headings, Inter for clean body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet.js for the interactive intervention-area map (only external library used) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== BACKGROUND ANIMATION LAYER ===================== -->
+  <!-- Sits behind everything: canvas draws slow floating leaves, CSS draws the flowing water ribbon -->
+  <canvas id="leaf-canvas"></canvas>
+
+  <!-- ===================== NAVIGATION BAR ===================== -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="brand">
+        <img src="images/logo.png" alt="Logo ORMVAO" class="brand-logo">
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home" class="nav-link active">Accueil</a>
+        <a href="#about" class="nav-link">À propos</a>
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#projects" class="nav-link">Projets</a>
+        <a href="#areas" class="nav-link">Zones d'intervention</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== HOME / HERO SECTION ===================== -->
+  <section id="home" class="hero">
+    <!-- Decorative animated wave ribbon representing the Draa water flow -->
+    <div class="hero-waves" aria-hidden="true">
+      <svg class="wave wave-back" viewBox="0 0 1600 220" preserveAspectRatio="none"><path d="M0,120 C 300,200 500,40 800,110 C 1100,180 1300,60 1600,130 L1600,220 L0,220 Z"/></svg>
+      <svg class="wave wave-front" viewBox="0 0 1600 220" preserveAspectRatio="none"><path d="M0,140 C 320,60 520,190 820,120 C 1120,50 1320,170 1600,110 L1600,220 L0,220 Z"/></svg>
+    </div>
+
+    <div class="hero-content reveal">
+      <span class="eyebrow">Ouarzazate · Vallée du Drâa</span>
+      <h1>Cultiver l'eau, faire pousser l'avenir</h1>
+      <p class="hero-text">
+        L'ORMVAO accompagne les agriculteurs de la région de Ouarzazate dans la gestion de l'irrigation,
+        la modernisation des exploitations et la mise en valeur durable des oasis et des vallées.
+      </p>
+      <div class="hero-actions">
+        <a href="#services" class="btn btn-primary">Découvrir nos services</a>
+        <a href="#contact" class="btn btn-outline">Nous contacter</a>
+      </div>
+    </div>
+
+    <!-- Growing plant signature graphic -->
+    <div class="hero-plant" aria-hidden="true">
+      <svg viewBox="0 0 200 320" class="plant-svg">
+        <path class="stem" d="M100 320 L100 120" />
+        <path class="leaf leaf-1" d="M100 220 C 40 210, 20 150, 60 100 C 100 150, 100 190, 100 220 Z" />
+        <path class="leaf leaf-2" d="M100 180 C 160 170, 180 120, 150 80 C 110 120, 100 150, 100 180 Z" />
+        <path class="leaf leaf-3" d="M100 130 C 60 120, 50 80, 80 55 C 105 80, 100 105, 100 130 Z" />
+        <circle class="bud" cx="100" cy="115" r="6" />
+      </svg>
+    </div>
+
+    <a href="#about" class="scroll-cue" aria-label="Défiler vers la section suivante">
+      <span></span>
+    </a>
+  </section>
+
+  <!-- ===================== ABOUT SECTION ===================== -->
+  <section id="about" class="section about">
+    <div class="section-grain" aria-hidden="true"></div>
+    <div class="container about-grid">
+      <div class="about-media reveal">
+        <div class="about-frame">
+          <svg viewBox="0 0 400 400" class="about-illustration">
+            <!-- simple stylised oasis illustration: river, palm, terraces -->
+            <path class="river" d="M0 260 C 100 230, 140 300, 240 270 C 320 245, 360 300, 400 270 L400 400 L0 400 Z" />
+            <path class="terrace terrace-1" d="M0 320 L400 320 L400 340 L0 340 Z" />
+            <path class="terrace terrace-2" d="M0 350 L400 350 L400 370 L0 370 Z" />
+            <g class="palm">
+              <rect x="196" y="150" width="8" height="120" rx="3"/>
+              <path d="M200 150 C 150 130, 120 90, 100 70 C 140 80, 175 110, 200 150 Z" />
+              <path d="M200 150 C 250 130, 280 90, 300 70 C 260 80, 225 110, 200 150 Z" />
+              <path d="M200 150 C 170 120, 160 80, 170 50 C 195 80, 200 120, 200 150 Z" />
+              <path d="M200 150 C 230 120, 240 80, 230 50 C 205 80, 200 120, 200 150 Z" />
+              <path d="M200 150 C 190 110, 195 70, 200 45 C 205 70, 210 110, 200 150 Z" />
+            </g>
+            <circle class="sun" cx="70" cy="70" r="30"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="about-copy reveal">
+        <span class="eyebrow">À propos de l'ORMVAO</span>
+        <h2>Un demi-siècle au service de la terre et de l'eau</h2>
+        <p>
+          L'Office Régional de Mise en Valeur Agricole de Ouarzazate est un établissement public chargé
+          du développement agricole dans les oasis et vallées de la région. Notre mission couvre la
+          gestion des périmètres irrigués, l'appui technique aux agriculteurs et la préservation des
+          ressources hydriques face aux défis climatiques.
+        </p>
+        <p>
+          Nous œuvrons chaque jour aux côtés des coopératives locales pour moderniser les techniques
+          d'irrigation, diversifier les cultures et renforcer la résilience des oasis du Drâa.
+        </p>
+
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-number" data-count="12000">0</span>
+            <span class="stat-label">Hectares irrigués</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="8500">0</span>
+            <span class="stat-label">Exploitations accompagnées</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="40">0</span>
+            <span class="stat-label">Années d'expérience</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SERVICES SECTION ===================== -->
+  <section id="services" class="section services">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Nos services</span>
+        <h2>Un accompagnement complet des filières agricoles</h2>
+        <p>Du conseil technique à la gestion de l'eau, nous mettons notre expertise au service des agriculteurs de la région.</p>
+      </div>
+
+      <div class="cards-grid">
+        <article class="card reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48"><path d="M24 4 C 24 4 12 20 12 30 A12 12 0 0 0 36 30 C 36 20 24 4 24 4 Z"/></svg>
+          </div>
+          <h3>Gestion de l'irrigation</h3>
+          <p>Distribution équitable de l'eau, entretien des canaux et modernisation des réseaux d'irrigation goutte-à-goutte.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48"><path d="M8 40 L8 24 L24 10 L40 24 L40 40 Z"/></svg>
+          </div>
+          <h3>Appui technique</h3>
+          <p>Encadrement des agriculteurs, formations aux bonnes pratiques agricoles et transfert de nouvelles technologies.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"/></svg>
+          </div>
+          <h3>Développement des filières</h3>
+          <p>Soutien à la production de rosiers, safran, oliviers et cultures maraîchères adaptées au climat local.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48"><path d="M24 6 L42 16 L42 32 L24 42 L6 32 L6 16 Z"/></svg>
+          </div>
+          <h3>Aménagement des périmètres</h3>
+          <p>Études et réalisation d'infrastructures hydro-agricoles pour sécuriser durablement la production locale.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48"><path d="M6 34 Q24 6 42 34 Z"/></svg>
+          </div>
+          <h3>Préservation des oasis</h3>
+          <p>Actions de reboisement, lutte contre l'ensablement et protection des palmeraies traditionnelles.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="6"/></svg>
+          </div>
+          <h3>Organisation des coopératives</h3>
+          <p>Accompagnement juridique et organisationnel des associations d'usagers des eaux agricoles.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROJECTS SECTION ===================== -->
+  <section id="projects" class="section projects">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Nos projets</span>
+        <h2>Des initiatives qui transforment la vallée</h2>
+        <p>Une sélection de programmes menés par l'ORMVAO pour un développement agricole durable.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <span class="timeline-tag">Irrigation</span>
+            <h3>Modernisation du réseau d'irrigation du Drâa moyen</h3>
+            <p>Passage progressif des canaux traditionnels à l'irrigation localisée sur plus de 3 000 hectares.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <span class="timeline-tag">Agriculture durable</span>
+            <h3>Programme de valorisation du safran de Taliouine-Ouarzazate</h3>
+            <p>Appui aux coopératives locales pour améliorer la qualité et la commercialisation du safran.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <span class="timeline-tag">Environnement</span>
+            <h3>Lutte contre l'ensablement des palmeraies</h3>
+            <p>Plantation de brise-vents et stabilisation des dunes autour des oasis les plus exposées.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-marker"></div>
+          <div class="timeline-card">
+            <span class="timeline-tag">Formation</span>
+            <h3>Académie régionale de l'agriculture oasienne</h3>
+            <p>Sessions de formation continue pour les jeunes agriculteurs sur les techniques économes en eau.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== AREAS OF INTERVENTION / MAP SECTION ===================== -->
+  <section id="areas" class="section areas">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Zones d'intervention</span>
+        <h2>Présents dans toute la région de Ouarzazate</h2>
+        <p>Explorez les communes et périmètres irrigués couverts par l'action de l'ORMVAO.</p>
+      </div>
+
+      <div class="areas-layout">
+        <!-- Leaflet map container -->
+        <div id="map" class="map-box reveal"></div>
+
+        <ul class="areas-list reveal">
+          <li data-lat="30.9335" data-lng="-6.9370" class="area-item active">
+            <span class="area-dot"></span>
+            <div>
+              <h4>Ouarzazate</h4>
+              <p>Siège de l'office et périmètre irrigué central.</p>
+            </div>
+          </li>
+          <li data-lat="30.3286" data-lng="-6.0233" class="area-item">
+            <span class="area-dot"></span>
+            <div>
+              <h4>Skoura</h4>
+              <p>Oasis de palmiers dattiers et cultures maraîchères.</p>
+            </div>
+          </li>
+          <li data-lat="30.5644" data-lng="-6.9098" class="area-item">
+            <span class="area-dot"></span>
+            <div>
+              <h4>Kelaat M'Gouna</h4>
+              <p>Vallée des roses et production rosière.</p>
+            </div>
+          </li>
+          <li data-lat="30.0490" data-lng="-6.6236" class="area-item">
+            <span class="area-dot"></span>
+            <div>
+              <h4>Agdz</h4>
+              <p>Porte d'entrée de la vallée du Drâa.</p>
+            </div>
+          </li>
+          <li data-lat="30.3300" data-lng="-5.8500" class="area-item">
+            <span class="area-dot"></span>
+            <div>
+              <h4>Boumalne Dadès</h4>
+              <p>Vallées des Dadès et périmètres en terrasses.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT SECTION ===================== -->
+  <section id="contact" class="section contact">
+    <div class="container contact-grid">
+      <div class="contact-info reveal">
+        <span class="eyebrow">Contact</span>
+        <h2>Parlons de votre projet agricole</h2>
+        <p>Notre équipe est à votre écoute pour toute question relative à l'irrigation, à l'accompagnement technique ou aux partenariats.</p>
+
+        <ul class="contact-details">
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M12 2 C7 2 3 6 3 11 C3 17 12 22 12 22 C12 22 21 17 21 11 C21 6 17 2 12 2 Z M12 14 A3 3 0 1 1 12 8 A3 3 0 0 1 12 14 Z"/></svg>
+            <span>Avenue Mohammed V, Ouarzazate, Maroc</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M4 4 H20 V18 H4 Z M4 5 L12 12 L20 5"/></svg>
+            <span>contact@ormvao.ma</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M6 3 L9 3 L11 8 L8 10 C9 13 11 15 14 16 L16 13 L21 15 L21 18 C21 20 19 21 17 21 C9 21 3 15 3 7 C3 5 4 3 6 3 Z"/></svg>
+            <span>+212 5 24 88 00 00</span>
+          </li>
+        </ul>
+      </div>
+
+      <form class="contact-form reveal" id="contactForm">
+        <div class="form-row">
+          <label for="name">Nom complet</label>
+          <input type="text" id="name" name="name" placeholder="Votre nom" required>
+        </div>
+        <div class="form-row">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" name="email" placeholder="vous@exemple.com" required>
+        </div>
+        <div class="form-row">
+          <label for="subject">Sujet</label>
+          <input type="text" id="subject" name="subject" placeholder="Objet de votre message" required>
+        </div>
+        <div class="form-row">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Envoyer le message</button>
+        <p class="form-note" id="formNote" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="images/logo.png" alt="Logo ORMVAO" class="footer-logo">
+        <p>Office Régional de Mise en Valeur Agricole de Ouarzazate</p>
+      </div>
+      <p class="footer-copy">© <span id="year"></span> ORMVAO. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <button id="backToTop" class="back-to-top" aria-label="Retour en haut">↑</button>
+
+  <!-- Leaflet.js library (only external JS library, used solely for the map) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
